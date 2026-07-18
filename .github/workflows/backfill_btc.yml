@@ -1,0 +1,32 @@
+# 저장 위치: 레포지토리의 .github/workflows/backfill_btc.yml
+# 역할: 과거 전체 데이터를 딱 한 번 수동으로 받아올 때 쓰는 워크플로.
+#       평소 자동 실행되는 fetch_btc.yml 과는 별개.
+
+name: Backfill BTC Data
+
+on:
+  workflow_dispatch: {}   # Actions 탭에서 수동으로만 실행됨 (자동 스케줄 없음)
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install requests pandas
+
+      - name: 과거 데이터 전체 백필
+        run: python binance_btc_backfill.py
+
+      - name: 결과 자동 커밋
+        run: |
+          git config user.name "btc-bot"
+          git config user.email "actions@github.com"
+          git add btc_history.csv
+          git diff --cached --quiet || git commit -m "chore: BTC 과거 데이터 백필"
+          git push
