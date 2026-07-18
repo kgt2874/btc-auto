@@ -1,2 +1,3 @@
 timestamp_utc,symbol,last_price,price_change_pct_24h,volume_24h_btc,quote_volume_24h_usdt,close,sma20,sma50,rsi14,volume_change_pct,golden_cross_sma20_over_sma50
 2026-07-18T07:07:22+00:00,BTCUSDT,63981.12,1.743,14639.12359,929022949.0277117,63981.11,62920.53,63582.67,54.02,-88.63,False
+2026-07-18T07:15:45+00:00,BTCUSDT,64000.54,1.765,14551.5672,923533969.9462544,64000.55,63842.82,63844.87,46.71,-71.32,False
