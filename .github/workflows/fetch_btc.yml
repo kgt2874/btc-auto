@@ -1,0 +1,35 @@
+# 저장 위치: 레포지토리의 .github/workflows/fetch_btc.yml
+# 역할: 매일(UTC 00:10, 한국시간 09:10) 자동으로 스크립트를 실행하고
+#       btc_history.csv 변경분을 자동 커밋한다.
+# 준비물: 이 레포에 binance_btc_fetch.py 파일도 함께 올려둘 것.
+
+name: Fetch BTC Data
+
+on:
+  schedule:
+    - cron: "10 0 * * *"   # 필요시 주기 변경 (예: "0 */4 * * *" = 4시간마다)
+  workflow_dispatch: {}    # Actions 탭에서 수동 실행 버튼도 활성화
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install requests pandas
+
+      - name: 데이터 수집 실행
+        run: python binance_btc_fetch.py
+
+      - name: 결과 자동 커밋
+        run: |
+          git config user.name "btc-bot"
+          git config user.email "actions@github.com"
+          git add btc_history.csv
+          git diff --cached --quiet || git commit -m "chore: BTC 데이터 자동 업데이트"
+          git push
