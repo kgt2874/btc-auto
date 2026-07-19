@@ -20,12 +20,12 @@ jobs:
         run: pip install requests pandas
 
       - name: 과거 데이터 전체 백필
-        run: python binance_eth_backfill.py
+        run: python ethereum/binance_eth_backfill.py
 
       - name: 결과 자동 커밋
         run: |
           git config user.name "eth-bot"
           git config user.email "actions@github.com"
-          git add eth_history.csv
+          git add ethereum/eth_history.csv
           git diff --cached --quiet || git commit -m "chore: ETH 과거 데이터 백필"
           git push
