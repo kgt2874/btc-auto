@@ -1,0 +1,31 @@
+# 저장 위치: .github/workflows/backfill_xrp.yml
+# 역할: 리플(XRP) 과거 전체 데이터를 딱 한 번 수동으로 받아올 때 쓰는 워크플로.
+
+name: Backfill XRP Data
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install requests pandas
+
+      - name: 과거 데이터 전체 백필
+        run: python ripple/binance_xrp_backfill.py
+
+      - name: 결과 자동 커밋
+        run: |
+          git config user.name "xrp-bot"
+          git config user.email "actions@github.com"
+          git add ripple/xrp_history.csv
+          git diff --cached --quiet || git commit -m "chore: XRP 과거 데이터 백필"
+          git push
