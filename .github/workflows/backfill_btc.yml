@@ -21,12 +21,12 @@ jobs:
         run: pip install requests pandas
 
       - name: 과거 데이터 전체 백필
-        run: python binance_btc_backfill.py
+        run: python 비트코인/binance_btc_backfill.py
 
       - name: 결과 자동 커밋
         run: |
           git config user.name "btc-bot"
           git config user.email "actions@github.com"
-          git add btc_history.csv
+          git add 비트코인/btc_history.csv
           git diff --cached --quiet || git commit -m "chore: BTC 과거 데이터 백필"
           git push
