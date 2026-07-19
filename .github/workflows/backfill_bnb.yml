@@ -1,0 +1,31 @@
+# 저장 위치: .github/workflows/backfill_bnb.yml
+# 역할: 바이낸스 코인(BNB) 과거 전체 데이터를 딱 한 번 수동으로 받아올 때 쓰는 워크플로.
+
+name: Backfill BNB Data
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install requests pandas
+
+      - name: 과거 데이터 전체 백필
+        run: python bnb/binance_bnb_backfill.py
+
+      - name: 결과 자동 커밋
+        run: |
+          git config user.name "bnb-bot"
+          git config user.email "actions@github.com"
+          git add bnb/bnb_history.csv
+          git diff --cached --quiet || git commit -m "chore: BNB 과거 데이터 백필"
+          git push
