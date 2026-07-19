@@ -22,12 +22,12 @@ jobs:
         run: pip install requests pandas
 
       - name: 데이터 수집 실행
-        run: python binance_eth_fetch.py
+        run: python ethereum/binance_eth_fetch.py
 
       - name: 결과 자동 커밋
         run: |
           git config user.name "eth-bot"
           git config user.email "actions@github.com"
-          git add eth_history.csv
+          git add ethereum/eth_history.csv
           git diff --cached --quiet || git commit -m "chore: ETH 데이터 자동 업데이트"
           git push
