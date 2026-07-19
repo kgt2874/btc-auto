@@ -1,0 +1,33 @@
+# 저장 위치: .github/workflows/fetch_sol.yml
+# 역할: 매시간 자동으로 새 SOL 캔들을 받아 sol_history.csv에 이어붙인다.
+
+name: Fetch SOL Data
+
+on:
+  schedule:
+    - cron: "20 * * * *"
+  workflow_dispatch: {}
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: pip install requests pandas
+
+      - name: 데이터 수집 실행
+        run: python solana/binance_sol_fetch.py
+
+      - name: 결과 자동 커밋
+        run: |
+          git config user.name "sol-bot"
+          git config user.email "actions@github.com"
+          git add solana/sol_history.csv
+          git diff --cached --quiet || git commit -m "chore: SOL 데이터 자동 업데이트"
+          git push
